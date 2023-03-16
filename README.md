@@ -1,23 +1,17 @@
-# :package_description
+# RoadRunner locks
 
-[![PHP Version Require](https://poser.pugx.org/:vendor_slug/:package_slug/require/php)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![Latest Stable Version](https://poser.pugx.org/:vendor_slug/:package_slug/v/stable)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![phpunit](https://github.com/:vendor_slug/:package_slug/actions/workflows/phpunit.yml/badge.svg)](https://github.com/:vendor_slug/:package_slug/actions)
-[![psalm](https://github.com/:vendor_slug/:package_slug/actions/workflows/psalm.yml/badge.svg)](https://github.com/:vendor_slug/:package_slug/actions)
-[![Codecov](https://codecov.io/gh/:vendor_slug/:package_slug/branch/master/graph/badge.svg)](https://codecov.io/gh/:vendor_slug/:package_slug/)
-[![Total Downloads](https://poser.pugx.org/:vendor_slug/:package_slug/downloads)](https://packagist.org/:vendor_slug/:package_slug/phpunit)
+[![PHP Version Require](https://poser.pugx.org/roadrunner-php/lock/require/php)](https://packagist.org/packages/roadrunner-php/lock)
+[![Latest Stable Version](https://poser.pugx.org/roadrunner-php/lock/v/stable)](https://packagist.org/packages/roadrunner-php/lock)
+[![phpunit](https://github.com/roadrunner-php/lock/actions/workflows/phpunit.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
+[![psalm](https://github.com/roadrunner-php/lock/actions/workflows/psalm.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
+[![Codecov](https://codecov.io/gh/roadrunner-php/lock/branch/master/graph/badge.svg)](https://codecov.io/gh/roadrunner-php/lock/)
+[![Total Downloads](https://poser.pugx.org/roadrunner-php/lock/downloads)](https://packagist.org/roadrunner-php/lock/phpunit)
 <a href="https://discord.gg/8bZsjYhVVk"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
 
-<!--delete-->
----
-This repo can be used to scaffold a Spiral Framework package. Follow these steps to get started:
-
-1. Press the "Use template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run `php ./configure.php` to run a script that will replace all placeholders throughout all the files.
----
-<!--/delete-->
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
+This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of
+distributed locks in PHP applications. The plugin provides a fast, lightweight, and reliable way to acquire, release,
+and manage locks in a distributed environment, making it ideal for use in high-traffic web applications and
+microservices.
 
 ## Requirements
 
@@ -30,7 +24,91 @@ Make sure that your server is configured with following PHP version and extensio
 You can install the package via composer:
 
 ```bash
-composer require :vendor_slug/:package_slug
+composer require roadrunner-php/lock
+```
+
+## Usage
+
+```php
+use RoadRunner\Lock\Lock;
+use Spiral\Goridge\RPC\RPC;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$lock = new Lock(RPC::create('tcp://127.0.0.1:6001'));
+```
+
+### Acquire lock
+
+Locks a resource so that it can be accessed by one process at a time. When a resource is locked, other processes that 
+attempt to lock the same resource will be blocked until the lock is released.
+
+```php
+$id = $lock->lock('pdf:create');
+
+// Acquire lock with ttl - 10 seconds
+$id = $lock->lock('pdf:create', ttl: 10);
+// or
+$id = $lock->lock('pdf:create', ttl: new \DateInterval('PT10S'));
+
+// Acquire lock and wait 5 seconds until lock will be released
+$id = $lock->lock('pdf:create', wait: 5);
+// or
+$id = $lock->lock('pdf:create', wait: new \DateInterval('PT5S'));
+```
+
+### Acquire read lock
+
+Locks a resource for shared access, allowing multiple processes to access the resource simultaneously. When a resource 
+is locked for shared access, other processes that attempt to lock the resource for exclusive access will be blocked 
+until all shared locks are released.
+
+```php
+$id = $lock->lockRead('pdf:create', ttl: 10);
+// or
+$id = $lock->lockRead('pdf:create', ttl: new \DateInterval('PT10S'));
+
+// Acquire lock and wait 5 seconds until lock will be released
+$id = $lock->lockRead('pdf:create', wait: 5);
+// or
+$id = $lock->lockRead('pdf:create', wait: new \DateInterval('PT5S'));
+```
+
+### Release lock
+
+Releases an exclusive lock or read lock on a resource that was previously acquired by a call to `lock()`
+or `lockRead()`.
+
+```php
+// Release lock after task is done.
+$lock->release('pdf:create', $id);
+
+// Force release lock
+$lock->forceRelease('pdf:create');
+```
+
+### Check lock
+
+Checks if a resource is currently locked and returns information about the lock.
+
+```php
+$status = $lock->exists('pdf:create');
+if($status) {
+    // Lock exists
+} else {
+    // Lock not exists
+}
+```
+
+### Update TTL
+
+Updates the time-to-live (TTL) for the locked resource.
+
+```php
+// Add 10 seconds to lock ttl
+$lock->updateTTL('pdf:create', $id, 10);
+// or
+$lock->updateTTL('pdf:create', $id, new \DateInterval('PT10S'));
 ```
 
 ## Testing
@@ -39,14 +117,9 @@ composer require :vendor_slug/:package_slug
 composer test
 ```
 
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
 ## Credits
 
-- [:author_name](https://github.com/:author_username)
-- [All Contributors](../../contributors)
+- [butschster](https://github.com/butschster)
 
 ## License
 
