@@ -29,18 +29,20 @@ final class Lock
      * other processes that attempt to lock the same resource will be blocked until the lock is released.
      *
      * @param non-empty-string $resource The name of the resource to be locked.
+     * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
      * @param int|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lock(
         string $resource,
+        ?string $id = null,
         int|DateInterval $ttl = 0,
         int|DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
-        $request->setId($id = $this->identityGenerator->generate());
+        $request->setId($id ??= $this->identityGenerator->generate());
         $request->setTtl($this->convertTimeToSeconds($ttl));
         $request->setWait($this->convertTimeToSeconds($waitTTL));
 
@@ -57,18 +59,20 @@ final class Lock
      * will be blocked until all shared locks are released.
      *
      * @param non-empty-string $resource The name of the resource to be locked.
+     * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
      * @param int|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lockRead(
         string $resource,
+        ?string $id = null,
         int|DateInterval $ttl = 0,
         int|DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
-        $request->setId($id = $this->identityGenerator->generate());
+        $request->setId($id ??= $this->identityGenerator->generate());
         $request->setTtl($this->convertTimeToSeconds($ttl));
         $request->setWait($this->convertTimeToSeconds($waitTTL));
 

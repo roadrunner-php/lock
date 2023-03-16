@@ -45,28 +45,33 @@ final class LockTest extends TestCase
         int|\DateInterval|\DateTimeInterface $wait,
         int $expectedWaitSec,
         bool $expectedResult = true,
+        ?string $id = null,
     ): void {
-        $this->idGenerator->shouldReceive('generate')->once()->andReturn('some-id');
+        if ($id === null) {
+            $this->idGenerator->shouldReceive('generate')->once()->andReturn('some-id');
+        }
 
         $this->rpc->shouldReceive('call')
             ->withArgs(function (string $method, Request $request, string $response) use (
                 $expectedTtlSec,
                 $expectedWaitSec,
-                $callMethod
+                $callMethod,
+                $id
             ): bool {
                 return $method === $callMethod
                     && $request->getResource() === 'resource'
-                    && $request->getId() === 'some-id'
+                    && $request->getId() === ($id === null ? 'some-id' : $id)
                     && $request->getTtl() === $expectedTtlSec
-                    && $request->getWait() === $expectedWaitSec
-                    && $response === Response::class;
+                && $request->getWait() === $expectedWaitSec
+                && $response === Response::class;
             })
             ->andReturn(new Response(['ok' => $expectedResult]));
 
+        $result = $this->lock->$method(resource: 'resource', id: $id, ttl: $ttl, waitTTL: $wait);
         if ($expectedResult) {
-            $this->assertSame('some-id', $this->lock->$method('resource', $ttl, $wait));
+            $this->assertSame(($id === null ? 'some-id' : $id), $result);
         } else {
-            $this->assertFalse($this->lock->$method('resource', $ttl, $wait));
+            $this->assertFalse($result);
         }
     }
 
@@ -131,7 +136,7 @@ final class LockTest extends TestCase
     {
         $this->rpc->shouldReceive('call')
             ->once()
-            ->withArgs(function (string $method, Request $request, string $response) use($expectedTtl): bool {
+            ->withArgs(function (string $method, Request $request, string $response) use ($expectedTtl): bool {
                 return $method === 'lock.UpdateTTL'
                     && $request->getResource() === 'resource'
                     && $request->getId() === 'some-id'
@@ -165,13 +170,23 @@ final class LockTest extends TestCase
     {
         foreach ($this->lockDataProvider() as $name => $data) {
             foreach ([true, false] as $result) {
-                yield 'lock: ' . $name . ' | ' . \var_export($result, true) => ['lock', 'lock.Lock', ...$data, $result];
-                yield 'read-lock: ' . $name . ' | ' . \var_export($result, true) => [
-                    'lockRead',
-                    'lock.LockRead',
-                    ...$data,
-                    $result,
-                ];
+                foreach (['id1', null] as $id) {
+                    yield 'lock: ' . $name . ' | ' .$id. ' | ' . \var_export($result, true) => [
+                        'lock',
+                        'lock.Lock',
+                        ...$data,
+                        $result,
+                        $id
+                    ];
+
+                    yield 'read-lock: ' . $name . ' | ' .$id. ' | ' . \var_export($result, true) => [
+                        'lockRead',
+                        'lock.LockRead',
+                        ...$data,
+                        $result,
+                        $id
+                    ];
+                }
             }
         }
     }
