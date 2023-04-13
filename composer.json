@@ -19,7 +19,7 @@
     "php": "^8.1",
     "ramsey/uuid": "^4.7",
     "roadrunner-php/api": "^4.3.1",
-    "spiral/goridge": "^3.1"
+    "spiral/goridge": "^4.0"
   },
   "require-dev": {
     "mockery/mockery": "^1.5",
