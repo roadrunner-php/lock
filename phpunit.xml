@@ -9,12 +9,12 @@
          executionOrder="random"
          failOnWarning="true"
          failOnRisky="true"
-         ailOnEmptyTestSuite="true"
+         failOnEmptyTestSuite="true"
          beStrictAboutOutputDuringTests="true"
          cacheDirectory=".phpunit.cache"
          backupStaticProperties="false">
   <testsuites>
-    <testsuite name="Lock Test Suite">
+    <testsuite name="Scheduler Test Suite">
       <directory>tests</directory>
     </testsuite>
   </testsuites>
