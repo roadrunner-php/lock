@@ -166,9 +166,9 @@ final class LockTest extends TestCase
         $this->assertSame($result, $this->lock->exists('resource', 'some-id'));
     }
 
-    public function lockTypeDataProvider(): \Generator
+    public static function lockTypeDataProvider(): \Generator
     {
-        foreach ($this->lockDataProvider() as $name => $data) {
+        foreach (self::lockDataProvider() as $name => $data) {
             foreach ([true, false] as $result) {
                 foreach (['id1', null] as $id) {
                     yield 'lock: ' . $name . ' | ' .$id. ' | ' . \var_export($result, true) => [
@@ -191,16 +191,16 @@ final class LockTest extends TestCase
         }
     }
 
-    public function updateTTLDataProvider()
+    public static function updateTTLDataProvider(): \Traversable
     {
-        foreach ($this->lockDataProvider() as $name => $data) {
+        foreach (self::lockDataProvider() as $name => $data) {
             foreach ([true, false] as $result) {
                 yield $name . ' | ' . \var_export($result, true) => [$data[0], $data[1], $result];
             }
         }
     }
 
-    public function lockDataProvider(): \Generator
+    public static function lockDataProvider(): \Generator
     {
         yield 'int' => [10, 10, 8, 8,];
 
@@ -212,11 +212,9 @@ final class LockTest extends TestCase
         ];
     }
 
-    public function resultDataProvider()
+    public static function resultDataProvider(): \Traversable
     {
-        return [
-            [true],
-            [false],
-        ];
+        yield [true];
+        yield [false];
     }
 }
