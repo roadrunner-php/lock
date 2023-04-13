@@ -1,48 +1,48 @@
 {
-  "name": "roadrunner-php/lock",
-  "description": "This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of distributed locks in PHP applications. The plugin provides a fast, lightweight, and reliable way to acquire, release, and manage locks in a distributed environment, making it ideal for use in high-traffic web applications and microservices.",
-  "keywords": [
-    "roadrunner-php",
-    "spiral",
-    "lock"
-  ],
-  "homepage": "https://github.com/roadrunner-php/lock",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "butschster",
-      "email": "butschster@gmail.com",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "php": "^8.1",
-    "ramsey/uuid": "^4.7",
-    "roadrunner-php/api": "^4.3.1",
-    "spiral/goridge": "^4.0"
-  },
-  "require-dev": {
-    "mockery/mockery": "^1.5",
-    "phpunit/phpunit": "^9.5",
-    "vimeo/psalm": "^4.9"
-  },
-  "autoload": {
-    "psr-4": {
-      "RoadRunner\\Lock\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "RoadRunner\\Lock\\Tests\\": "tests/src"
-    }
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit",
-    "psalm": "vendor/bin/psalm --config=psalm.xml ./src --show-info=true"
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+    "name": "roadrunner-php/lock",
+    "description": "This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of distributed locks in PHP applications. The plugin provides a fast, lightweight, and reliable way to acquire, release, and manage locks in a distributed environment, making it ideal for use in high-traffic web applications and microservices.",
+    "keywords": [
+        "roadrunner-php",
+        "spiral",
+        "lock"
+    ],
+    "homepage": "https://github.com/roadrunner-php/lock",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "butschster",
+            "email": "butschster@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ramsey/uuid": "^4.7",
+        "roadrunner-php/roadrunner-api-dto": "^1.0",
+        "spiral/goridge": "^4.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.5",
+        "phpunit/phpunit": "^10.0",
+        "vimeo/psalm": "^5.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "RoadRunner\\Lock\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RoadRunner\\Lock\\Tests\\": "tests/src"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "psalm": "vendor/bin/psalm --config=psalm.xml ./src --show-info=true"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
