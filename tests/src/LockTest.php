@@ -40,9 +40,9 @@ final class LockTest extends TestCase
     public function testLock(
         string $method,
         string $callMethod,
-        int|\DateInterval|\DateTimeInterface $ttl,
-        int $expectedTtlSec,
-        int|\DateInterval|\DateTimeInterface $wait,
+        int|float|\DateInterval|\DateTimeInterface $ttl,
+        int $expectedTtlMicroseconds,
+        int|float|\DateInterval|\DateTimeInterface $wait,
         int $expectedWaitSec,
         bool $expectedResult = true,
         ?string $id = null,
@@ -53,7 +53,7 @@ final class LockTest extends TestCase
 
         $this->rpc->shouldReceive('call')
             ->withArgs(function (string $method, Request $request, string $response) use (
-                $expectedTtlSec,
+                $expectedTtlMicroseconds,
                 $expectedWaitSec,
                 $callMethod,
                 $id
@@ -61,7 +61,7 @@ final class LockTest extends TestCase
                 return $method === $callMethod
                     && $request->getResource() === 'resource'
                     && $request->getId() === ($id === null ? 'some-id' : $id)
-                    && $request->getTtl() === $expectedTtlSec
+                    && $request->getTtl() === $expectedTtlMicroseconds
                 && $request->getWait() === $expectedWaitSec
                 && $response === Response::class;
             })
@@ -202,13 +202,15 @@ final class LockTest extends TestCase
 
     public static function lockDataProvider(): \Generator
     {
-        yield 'int' => [10, 10, 8, 8,];
+        yield 'int' => [10, 10000000, 8, 8000000,];
+
+        yield 'float' => [0.00001, 10, 0.000004, 4,];
 
         yield 'date-interval' => [
             new \DateInterval('PT10S'),
-            10,
+            10000000,
             new \DateInterval('PT9S'),
-            9,
+            9000000,
         ];
     }
 
