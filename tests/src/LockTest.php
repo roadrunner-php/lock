@@ -208,9 +208,9 @@ final class LockTest extends TestCase
 
         yield 'date-interval' => [
             new \DateInterval('PT10S'),
-            10000000,
+            10_000_000,
             new \DateInterval('PT9S'),
-            9000000,
+            9_000_000,
         ];
     }
 
