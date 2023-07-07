@@ -202,9 +202,9 @@ final class LockTest extends TestCase
 
     public static function lockDataProvider(): \Generator
     {
-        yield 'int' => [10, 10000000, 8, 8000000,];
+        yield 'int' => [10, 10_000_000, 8, 8_000_000,];
 
-        yield 'float' => [0.00001, 10, 0.000004, 4,];
+        yield 'float' => [0.000_01, 10, 0.000_004, 4,];
 
         yield 'date-interval' => [
             new \DateInterval('PT10S'),

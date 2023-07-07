@@ -169,10 +169,10 @@ final class Lock
     private function convertTimeToMicroseconds(int|float|DateInterval $ttl): int
     {
         if ($ttl instanceof DateInterval) {
-            return (int) round((int)$ttl->format('%s') * 1000000);
+            return (int) round((int)$ttl->format('%s') * 1_000_000);
         }
 
-        return (int) round($ttl * 1000000);
+        return (int) round($ttl * 1_000_000);
     }
 
     /**
