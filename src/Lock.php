@@ -30,21 +30,21 @@ final class Lock
      *
      * @param non-empty-string $resource The name of the resource to be locked.
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
-     * @param int|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
-     * @param int|DateInterval $waitTTL How long to wait to acquire lock until returning false.
+     * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
+     * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lock(
         string $resource,
         ?string $id = null,
-        int|DateInterval $ttl = 0,
-        int|DateInterval $waitTTL = 0,
+        int|float|DateInterval $ttl = 0,
+        int|float|DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
         $request->setId($id ??= $this->identityGenerator->generate());
-        $request->setTtl($this->convertTimeToSeconds($ttl));
-        $request->setWait($this->convertTimeToSeconds($waitTTL));
+        $request->setTtl($this->convertTimeToMicroseconds($ttl));
+        $request->setWait($this->convertTimeToMicroseconds($waitTTL));
 
         $response = $this->call('lock.Lock', $request);
 
@@ -60,21 +60,21 @@ final class Lock
      *
      * @param non-empty-string $resource The name of the resource to be locked.
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
-     * @param int|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
-     * @param int|DateInterval $waitTTL How long to wait to acquire lock until returning false.
+     * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
+     * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lockRead(
         string $resource,
         ?string $id = null,
-        int|DateInterval $ttl = 0,
-        int|DateInterval $waitTTL = 0,
+        int|float|DateInterval $ttl = 0,
+        int|float|DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
         $request->setId($id ??= $this->identityGenerator->generate());
-        $request->setTtl($this->convertTimeToSeconds($ttl));
-        $request->setWait($this->convertTimeToSeconds($waitTTL));
+        $request->setTtl($this->convertTimeToMicroseconds($ttl));
+        $request->setWait($this->convertTimeToMicroseconds($waitTTL));
 
         $response = $this->call('lock.LockRead', $request);
 
@@ -151,28 +151,28 @@ final class Lock
      *
      * @param string $resource The name of the resource to update the TTL for.
      * @param string $id An identifier for the process that is releasing the lock.
-     * @param int|DateInterval $ttl The new TTL in seconds.
+     * @param int|float|DateInterval $ttl The new TTL in seconds.
      * @return bool Returns true on success and false on failure.
      */
-    public function updateTTL(string $resource, string $id, int|DateInterval $ttl): bool
+    public function updateTTL(string $resource, string $id, int|float|DateInterval $ttl): bool
     {
         $request = new Request();
         $request->setResource($resource);
         $request->setId($id);
-        $request->setTtl($this->convertTimeToSeconds($ttl));
+        $request->setTtl($this->convertTimeToMicroseconds($ttl));
 
         $response = $this->call('lock.UpdateTTL', $request);
 
         return $response->getOk();
     }
 
-    private function convertTimeToSeconds(int|DateInterval $ttl): int
+    private function convertTimeToMicroseconds(int|float|DateInterval $ttl): int
     {
         if ($ttl instanceof DateInterval) {
-            return (int)$ttl->format('%s');
+            return (int) round((int)$ttl->format('%s') * 1_000_000);
         }
 
-        return $ttl;
+        return (int) round($ttl * 1_000_000);
     }
 
     /**
