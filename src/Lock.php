@@ -11,7 +11,7 @@ use RoadRunner\Lock\DTO\V1BETA1\{
 use Spiral\Goridge\RPC\Codec\ProtobufCodec;
 use Spiral\Goridge\RPC\RPCInterface;
 
-final class Lock
+final class Lock implements LockInterface
 {
     private RPCInterface $rpc;
 
