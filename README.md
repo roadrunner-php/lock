@@ -4,9 +4,9 @@
 [![Latest Stable Version](https://poser.pugx.org/roadrunner-php/lock/v/stable)](https://packagist.org/packages/roadrunner-php/lock)
 [![phpunit](https://github.com/roadrunner-php/lock/actions/workflows/phpunit.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
 [![psalm](https://github.com/roadrunner-php/lock/actions/workflows/psalm.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
-[![Codecov](https://codecov.io/gh/roadrunner-php/lock/branch/master/graph/badge.svg)](https://codecov.io/gh/roadrunner-php/lock/)
+[![Codecov](https://codecov.io/gh/roadrunner-php/lock/branch/1.x/graph/badge.svg)](https://codecov.io/gh/roadrunner-php/lock/)
 [![Total Downloads](https://poser.pugx.org/roadrunner-php/lock/downloads)](https://packagist.org/roadrunner-php/lock/phpunit)
-<a href="https://discord.gg/8bZsjYhVVk"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
+<a href="https://discord.gg/spiralphp"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
 
 This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of
 distributed locks in PHP applications. The plugin provides a fast, lightweight, and reliable way to acquire, release,
