@@ -121,7 +121,7 @@ final class LockTest extends TestCase
             ->withArgs(function (string $method, Request $request, string $response): bool {
                 return $method === 'lock.Exists'
                     && $request->getResource() === 'resource'
-                    && $request->getId() === ''
+                    && $request->getId() === '*'
                     && $response === Response::class;
             })
             ->andReturn(new Response(['ok' => $result]));

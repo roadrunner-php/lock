@@ -136,10 +136,7 @@ final class Lock implements LockInterface
     {
         $request = new Request();
         $request->setResource($resource);
-
-        if ($id !== null) {
-            $request->setId($id);
-        }
+        $request->setId($id ?? '*');
 
         $response = $this->call('lock.Exists', $request);
 
