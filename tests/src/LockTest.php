@@ -62,8 +62,8 @@ final class LockTest extends TestCase
                     && $request->getResource() === 'resource'
                     && $request->getId() === ($id === null ? 'some-id' : $id)
                     && $request->getTtl() === $expectedTtlMicroseconds
-                && $request->getWait() === $expectedWaitSec
-                && $response === Response::class;
+                    && $request->getWait() === $expectedWaitSec
+                    && $response === Response::class;
             })
             ->andReturn(new Response(['ok' => $expectedResult]));
 
@@ -218,5 +218,35 @@ final class LockTest extends TestCase
     {
         yield [true];
         yield [false];
+    }
+
+    public function testLockNegativeTtl(): void
+    {
+        self::expectException(\LogicException::class);
+        $this->lock->lock('resource', 'uuid', -300);
+    }
+
+    public function testLockNegativeWaitTtl(): void
+    {
+        self::expectException(\LogicException::class);
+        $this->lock->lock('resource', 'uuid', 0, -300);
+    }
+
+    public function testLockReadNegativeTtl(): void
+    {
+        self::expectException(\LogicException::class);
+        $this->lock->lock('resource', 'uuid', -300);
+    }
+
+    public function testLockReadNegativeWaitTtl(): void
+    {
+        self::expectException(\LogicException::class);
+        $this->lock->lockRead('resource', 'uuid', 0, -300);
+    }
+
+    public function testUpdateNegativeWaitTtl(): void
+    {
+        self::expectException(\LogicException::class);
+        $this->lock->updateTTL('resource', 'uuid', -300);
     }
 }
