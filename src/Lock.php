@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace RoadRunner\Lock;
 
 use DateInterval;
+use http\Exception\InvalidArgumentException;
 use RoadRunner\Lock\DTO\V1BETA1\{
     Request, Response
 };
@@ -33,6 +34,8 @@ final class Lock implements LockInterface
      * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function lock(
         string $resource,
@@ -63,6 +66,8 @@ final class Lock implements LockInterface
      * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function lockRead(
         string $resource,
@@ -150,6 +155,8 @@ final class Lock implements LockInterface
      * @param string $id An identifier for the process that is releasing the lock.
      * @param int|float|DateInterval $ttl The new TTL in seconds.
      * @return bool Returns true on success and false on failure.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function updateTTL(string $resource, string $id, int|float|DateInterval $ttl): bool
     {
