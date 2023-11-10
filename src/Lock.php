@@ -88,7 +88,7 @@ final class Lock implements LockInterface
      * lock() or lockRead(). The lock can only be released by the process that acquired it.
      *
      * @param non-empty-string $resource The name of the resource to be unlocked.
-     * @param non-empty-string $id An identifier for the process that is releasing the lock.
+     * @param non-empty-string $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the lock was released successfully, false otherwise.
      */
     public function release(string $resource, string $id): bool
@@ -128,8 +128,7 @@ final class Lock implements LockInterface
      * Checks if a resource is currently locked and returns information about the lock.
      *
      * @param string $resource The name of the resource to check.
-     * @param string|null $id An identifier for the process that is releasing the lock. If not specified, the lock
-     *                       information will be returned regardless of who acquired the lock.
+     * @param string|null $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the resource is locked, false otherwise.
      */
     public function exists(string $resource, ?string $id = null): bool
@@ -147,7 +146,7 @@ final class Lock implements LockInterface
      * Updates the time-to-live (TTL) for the locked resource.
      *
      * @param string $resource The name of the resource to update the TTL for.
-     * @param string $id An identifier for the process that is releasing the lock.
+     * @param string $id Lock ID from lock or lockRead method.
      * @param int|float|DateInterval $ttl The new TTL in seconds.
      * @return bool Returns true on success and false on failure.
      */
