@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace RoadRunner\Lock;
 
 use DateInterval;
-use http\Exception\InvalidArgumentException;
 use RoadRunner\Lock\DTO\V1BETA1\{
     Request, Response
 };
