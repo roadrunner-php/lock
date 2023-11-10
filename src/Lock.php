@@ -33,6 +33,8 @@ final class Lock implements LockInterface
      * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function lock(
         string $resource,
@@ -63,6 +65,8 @@ final class Lock implements LockInterface
      * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|DateInterval $waitTTL How long to wait to acquire lock until returning false.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function lockRead(
         string $resource,
@@ -149,6 +153,8 @@ final class Lock implements LockInterface
      * @param string $id Lock ID from lock or lockRead method.
      * @param int|float|DateInterval $ttl The new TTL in seconds.
      * @return bool Returns true on success and false on failure.
+     *
+     * @throws \InvalidArgumentException If ttl is negative.
      */
     public function updateTTL(string $resource, string $id, int|float|DateInterval $ttl): bool
     {
@@ -165,10 +171,12 @@ final class Lock implements LockInterface
     private function convertTimeToMicroseconds(int|float|DateInterval $ttl): int
     {
         if ($ttl instanceof DateInterval) {
-            return (int) round((int)$ttl->format('%s') * 1_000_000);
+            return (int) \round((int)$ttl->format('%s') * 1_000_000);
         }
 
-        return (int) round($ttl * 1_000_000);
+        \assert($ttl >= 0, 'TTL must be positive');
+
+        return (int) \round($ttl * 1_000_000);
     }
 
     /**
