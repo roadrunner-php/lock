@@ -175,7 +175,7 @@ final class Lock implements LockInterface
             return (int) \round((int)$ttl->format('%s') * 1_000_000);
         }
 
-            \assert($ttl >= 0, 'TTL must be positive');
+     \assert($ttl >= 0, 'TTL must be positive');
 
         return (int) \round($ttl * 1_000_000);
     }
