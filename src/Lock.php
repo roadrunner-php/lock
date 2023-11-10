@@ -173,9 +173,8 @@ final class Lock implements LockInterface
     {
         if ($ttl instanceof DateInterval) {
             return (int) \round((int)$ttl->format('%s') * 1_000_000);
-        }
-        if ($ttl < 0) {
-            throw new \InvalidArgumentException('TTL must be positive');
+
+\assert($ttl >= 0, 'TTL must be positive');
         }
 
         return (int) \round($ttl * 1_000_000);
