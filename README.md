@@ -5,7 +5,7 @@
 [![phpunit](https://github.com/roadrunner-php/lock/actions/workflows/phpunit.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
 [![psalm](https://github.com/roadrunner-php/lock/actions/workflows/psalm.yml/badge.svg)](https://github.com/roadrunner-php/lock/actions)
 [![Codecov](https://codecov.io/gh/roadrunner-php/lock/branch/1.x/graph/badge.svg)](https://codecov.io/gh/roadrunner-php/lock/)
-[![Total Downloads](https://poser.pugx.org/roadrunner-php/lock/downloads)](https://packagist.org/roadrunner-php/lock/phpunit)
+[![Total Downloads](https://poser.pugx.org/roadrunner-php/lock/downloads)](https://packagist.org/packages/roadrunner-php/lock)
 <a href="https://discord.gg/spiralphp"><img src="https://img.shields.io/badge/discord-chat-magenta.svg"></a>
 
 This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of
@@ -40,7 +40,7 @@ $lock = new Lock(RPC::create('tcp://127.0.0.1:6001'));
 
 ### Acquire lock
 
-Locks a resource so that it can be accessed by one process at a time. When a resource is locked, other processes that 
+Locks a resource so that it can be accessed by one process at a time. When a resource is locked, other processes that
 attempt to lock the same resource will be blocked until the lock is released.
 
 ```php
@@ -62,8 +62,8 @@ $id = $lock->lock('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
 
 ### Acquire read lock
 
-Locks a resource for shared access, allowing multiple processes to access the resource simultaneously. When a resource 
-is locked for shared access, other processes that attempt to lock the resource for exclusive access will be blocked 
+Locks a resource for shared access, allowing multiple processes to access the resource simultaneously. When a resource
+is locked for shared access, other processes that attempt to lock the resource for exclusive access will be blocked
 until all shared locks are released.
 
 ```php
