@@ -17,11 +17,11 @@ interface LockInterface
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
      * @param int|float|\DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|\DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
-     *                                          Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
-     *                                          server caps the acquire window at defaultImmediateTimeout (1ms), so false
-     *                                          is returned almost immediately when the resource is already locked. A
-     *                                          positive value blocks for up to that duration, returning the lock id as
-     *                                          soon as the lock is released, or false on timeout.
+     *        Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
+     *        server caps the acquire window at defaultImmediateTimeout (1ms), so false
+     *        is returned almost immediately when the resource is already locked. A
+     *        positive value blocks for up to that duration, returning the lock id as
+     *        soon as the lock is released, or false on timeout.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lock(
@@ -42,11 +42,11 @@ interface LockInterface
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
      * @param int|float|\DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
      * @param int|float|\DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
-     *                                          Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
-     *                                          server caps the acquire window at defaultImmediateTimeout (1ms), so false
-     *                                          is returned almost immediately when the resource is already locked. A
-     *                                          positive value blocks for up to that duration, returning the lock id as
-     *                                          soon as the lock is released, or false on timeout.
+     *        Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
+     *        server caps the acquire window at defaultImmediateTimeout (1ms), so false
+     *        is returned almost immediately when the resource is already locked. A
+     *        positive value blocks for up to that duration, returning the lock id as
+     *        soon as the lock is released, or false on timeout.
      * @return false|non-empty-string Returns lock ID if the lock was acquired successfully, false otherwise.
      */
     public function lockRead(
