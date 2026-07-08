@@ -94,6 +94,21 @@ $id = $lock->lockRead('pdf:create', wait: new \DateInterval('PT5S'));
 $id = $lock->lockRead('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
 ```
 
+### Lock parameters
+
+Both `lock()` and `lockRead()` accept the same arguments:
+
+| Parameter  | Type                            | Default       | Description |
+|------------|---------------------------------|---------------|-------------|
+| `resource` | `non-empty-string`              | —             | Name of the resource to lock. |
+| `id`       | `non-empty-string`\|`null`      | `null`        | Lock owner id. When omitted a random UUID is generated. Keep it — the same `id` must be passed to `release()`. |
+| `ttl`      | `int`\|`float`\|`DateInterval`  | `0` (forever) | Lock lifetime, in seconds. When it elapses the lock is released automatically; `0` means it never expires on its own. |
+| `wait`     | `int`\|`float`\|`DateInterval`  | `0` (~1ms)    | How long to wait for the lock to become free, in seconds. `0` is effectively non-blocking — the server caps it at `1ms`, so `false` is returned almost immediately when the resource is already locked. A positive value blocks for up to that duration, then returns `false` on timeout. |
+
+Both methods return the lock **id** (`non-empty-string`) when the lock is acquired, or `false` when it is not (the resource stayed busy until the `wait` window elapsed).
+
+> `ttl` and `wait` are expressed in **seconds** (`int` or `float`), or as a `DateInterval`.
+
 ### Release lock
 
 Releases an exclusive lock or read lock on a resource that was previously acquired by a call to `lock()`
