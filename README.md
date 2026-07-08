@@ -47,8 +47,12 @@ $lock = new Lock(RPC::create('tcp://127.0.0.1:6001'));
 
 ### Acquire lock
 
-Locks a resource so that it can be accessed by one process at a time. When a resource is locked, other processes that
-attempt to lock the same resource will be blocked until the lock is released.
+Locks a resource so that it can be accessed by one process at a time.
+
+By default the call is **non-blocking**: if the resource is already locked, it returns `false` almost immediately
+(the RoadRunner server caps the default `wait` window at `1ms`). Pass a positive `wait` to block until the lock is
+released — the call then returns the lock id as soon as the lock becomes free, or `false` when the `wait` timeout
+elapses.
 
 ```php
 $id = $lock->lock('pdf:create');
@@ -70,8 +74,11 @@ $id = $lock->lock('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
 ### Acquire read lock
 
 Locks a resource for shared access, allowing multiple processes to access the resource simultaneously. When a resource
-is locked for shared access, other processes that attempt to lock the resource for exclusive access will be blocked
-until all shared locks are released.
+is locked for shared access, other processes that attempt to lock the resource for exclusive access will fail to do so
+while any shared lock is held.
+
+As with `lock()`, the `wait` parameter is non-blocking by default (`false` is returned almost immediately, within the
+server's `1ms` window); pass a positive `wait` to block for up to that duration for the lock to become available.
 
 ```php
 $id = $lock->lockRead('pdf:create', ttl: 10);
