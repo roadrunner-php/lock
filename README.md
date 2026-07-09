@@ -47,8 +47,12 @@ $lock = new Lock(RPC::create('tcp://127.0.0.1:6001'));
 
 ### Acquire lock
 
-Locks a resource so that it can be accessed by one process at a time. When a resource is locked, other processes that
-attempt to lock the same resource will be blocked until the lock is released.
+Locks a resource so that it can be accessed by one process at a time.
+
+By default the call is **non-blocking**: if the resource is already locked, it returns `false` almost immediately
+(the RoadRunner server caps the default `waitTTL` window at `1ms`). Pass a positive `waitTTL` to block until the lock
+is released — the call then returns the lock id as soon as the lock becomes free, or `false` when the `waitTTL`
+timeout elapses.
 
 ```php
 $id = $lock->lock('pdf:create');
@@ -59,9 +63,9 @@ $id = $lock->lock('pdf:create', ttl: 10);
 $id = $lock->lock('pdf:create', ttl: new \DateInterval('PT10S'));
 
 // Acquire lock and wait 5 seconds until lock will be released
-$id = $lock->lock('pdf:create', wait: 5);
+$id = $lock->lock('pdf:create', waitTTL: 5);
 // or
-$id = $lock->lock('pdf:create', wait: new \DateInterval('PT5S'));
+$id = $lock->lock('pdf:create', waitTTL: new \DateInterval('PT5S'));
 
 // Acquire lock with id - 14e1b600-9e97-11d8-9f32-f2801f1b9fd1
 $id = $lock->lock('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
@@ -70,8 +74,11 @@ $id = $lock->lock('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
 ### Acquire read lock
 
 Locks a resource for shared access, allowing multiple processes to access the resource simultaneously. When a resource
-is locked for shared access, other processes that attempt to lock the resource for exclusive access will be blocked
-until all shared locks are released.
+is locked for shared access, other processes that attempt to lock the resource for exclusive access will fail to do so
+while any shared lock is held.
+
+As with `lock()`, the `waitTTL` parameter is non-blocking by default (`false` is returned almost immediately, within
+the server's `1ms` window); pass a positive `waitTTL` to block for up to that duration for the lock to become available.
 
 ```php
 $id = $lock->lockRead('pdf:create', ttl: 10);
@@ -79,13 +86,28 @@ $id = $lock->lockRead('pdf:create', ttl: 10);
 $id = $lock->lockRead('pdf:create', ttl: new \DateInterval('PT10S'));
 
 // Acquire lock and wait 5 seconds until lock will be released
-$id = $lock->lockRead('pdf:create', wait: 5);
+$id = $lock->lockRead('pdf:create', waitTTL: 5);
 // or
-$id = $lock->lockRead('pdf:create', wait: new \DateInterval('PT5S'));
+$id = $lock->lockRead('pdf:create', waitTTL: new \DateInterval('PT5S'));
 
 // Acquire lock with id - 14e1b600-9e97-11d8-9f32-f2801f1b9fd1
 $id = $lock->lockRead('pdf:create', id: '14e1b600-9e97-11d8-9f32-f2801f1b9fd1');
 ```
+
+### Lock parameters
+
+Both `lock()` and `lockRead()` accept the same arguments:
+
+| Parameter  | Type                            | Default       | Description |
+|------------|---------------------------------|---------------|-------------|
+| `resource` | `non-empty-string`              | —             | Name of the resource to lock. |
+| `id`       | `non-empty-string`\|`null`      | `null`        | Lock owner id. When omitted a random UUID is generated. Keep it — the same `id` must be passed to `release()`. |
+| `ttl`      | `int`\|`float`\|`DateInterval`  | `0` (forever) | Lock lifetime, in seconds. When it elapses the lock is released automatically; `0` means it never expires on its own. |
+| `waitTTL`  | `int`\|`float`\|`DateInterval`  | `0` (~1ms)    | How long to wait for the lock to become free, in seconds. `0` is effectively non-blocking — the server caps it at `1ms`, so `false` is returned almost immediately when the resource is already locked. A positive value blocks for up to that duration, then returns `false` on timeout. |
+
+Both methods return the lock **id** (`non-empty-string`) when the lock is acquired, or `false` when it is not (the resource stayed busy until the `waitTTL` window elapsed).
+
+> `ttl` and `waitTTL` are expressed in **seconds** (`int` or `float`), or as a `DateInterval`.
 
 ### Release lock
 
