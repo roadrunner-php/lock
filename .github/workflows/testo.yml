@@ -14,3 +14,4 @@ jobs:
         ['ubuntu-latest']
       dependencies: >-
         ['lowest', 'highest']
+      ini-values: memory_limit=-1, zend.assertions=1
