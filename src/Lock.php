@@ -41,6 +41,7 @@ final class Lock implements LockInterface
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
+    #[\Override]
     public function lock(
         string $resource,
         ?string $id = null,
@@ -78,6 +79,7 @@ final class Lock implements LockInterface
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
+    #[\Override]
     public function lockRead(
         string $resource,
         ?string $id = null,
@@ -105,6 +107,7 @@ final class Lock implements LockInterface
      * @param non-empty-string $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the lock was released successfully, false otherwise.
      */
+    #[\Override]
     public function release(string $resource, string $id): bool
     {
         $request = new Request();
@@ -126,6 +129,7 @@ final class Lock implements LockInterface
      * @param non-empty-string $resource The name of the resource to be unlocked
      * @return bool Returns true if all locks were released successfully, false otherwise
      */
+    #[\Override]
     public function forceRelease(string $resource): bool
     {
         $request = new Request();
@@ -145,6 +149,7 @@ final class Lock implements LockInterface
      * @param string|null $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the resource is locked, false otherwise.
      */
+    #[\Override]
     public function exists(string $resource, ?string $id = null): bool
     {
         $request = new Request();
@@ -166,6 +171,7 @@ final class Lock implements LockInterface
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
+    #[\Override]
     public function updateTTL(string $resource, string $id, int|float|\DateInterval $ttl): bool
     {
         $request = new Request();
@@ -181,12 +187,12 @@ final class Lock implements LockInterface
     private function convertTimeToMicroseconds(int|float|\DateInterval $ttl): int
     {
         if ($ttl instanceof \DateInterval) {
-            return (int) \round((int) $ttl->format('%s') * 1_000_000);
+            return (int) $ttl->format('%s') * 1_000_000;
         }
 
         \assert($ttl >= 0, 'TTL must be positive');
 
-        return (int) \round($ttl * 1_000_000);
+        return (int) \round((float) $ttl * 1_000_000.0);
     }
 
     /**
