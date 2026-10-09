@@ -51,6 +51,7 @@
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
+        "spiral/code-style": "^2.3.1",
         "testo/bridge-mockery": "^0.1.2",
         "testo/testo": "^0.10.55",
         "vimeo/psalm": "^6 || ^7"
@@ -67,6 +68,8 @@
     },
     "scripts": {
         "test": "vendor/bin/testo",
+        "cs:diff": "php-cs-fixer fix --dry-run -v --diff",
+        "cs:fix": "php-cs-fixer fix -v",
         "psalm": "vendor/bin/psalm --config=psalm.xml ./src --show-info=true"
     },
     "config": {
