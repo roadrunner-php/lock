@@ -11,8 +11,7 @@ final class UuidLockIdGenerator implements LockIdGeneratorInterface
 {
     public function __construct(
         private readonly UuidFactoryInterface $factory = new UuidFactory(),
-    ) {
-    }
+    ) {}
 
     public function generate(): string
     {
