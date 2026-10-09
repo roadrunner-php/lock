@@ -13,14 +13,4 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <!-- #[\Override] is a PHP 8.3 attribute, the package still supports PHP 8.2 -->
-        <MissingOverrideAttribute errorLevel="suppress" />
-        <!-- int|float TTL multiplied by an int, the product is rounded and cast to int right away -->
-        <InvalidOperand>
-            <errorLevel type="suppress">
-                <file name="src/Lock.php" />
-            </errorLevel>
-        </InvalidOperand>
-    </issueHandlers>
 </psalm>

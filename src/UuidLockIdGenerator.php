@@ -13,6 +13,7 @@ final class UuidLockIdGenerator implements LockIdGeneratorInterface
         private readonly UuidFactoryInterface $factory = new UuidFactory(),
     ) {}
 
+    #[\Override]
     public function generate(): string
     {
         return $this->factory->uuid4()->toString();
