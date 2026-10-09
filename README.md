@@ -25,6 +25,7 @@ microservices.
 Make sure that your server is configured with following PHP version and extensions:
 
 - PHP 8.1+
+- RoadRunner 3.0+ with the `lock` plugin enabled
 
 ## Installation
 
