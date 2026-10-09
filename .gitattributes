@@ -7,4 +7,5 @@
 /.php-cs-fixer.dist.php export-ignore
 /psalm.xml          export-ignore
 /psalm.xml.dist     export-ignore
+/infection.json5    export-ignore
 /UPGRADING.md       export-ignore

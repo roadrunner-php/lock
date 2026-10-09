@@ -69,6 +69,8 @@ final class LockTest
 
         yield 'float' => [0.000_01, 10, 0.000_004, 4,];
 
+        yield 'float rounded to microseconds' => [0.000_001_6, 2, 0.000_001_4, 1,];
+
         yield 'date-interval' => [
             new \DateInterval('PT10S'),
             10_000_000,
