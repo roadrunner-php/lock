@@ -1,0 +1,17 @@
+on:
+  pull_request: null
+  push:
+    branches:
+      - '1.x'
+
+name: testo
+
+jobs:
+  testo:
+    uses: spiral/gh-actions/.github/workflows/testo.yml@master
+    with:
+      os: >-
+        ['ubuntu-latest']
+      dependencies: >-
+        ['lowest', 'highest']
+      ini-values: memory_limit=-1, zend.assertions=1

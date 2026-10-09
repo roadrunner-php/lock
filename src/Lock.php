@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace RoadRunner\Lock;
 
-use DateInterval;
 use RoadRunner\Lock\DTO\V1BETA1\{
     Request, Response
 };
@@ -31,8 +30,8 @@ final class Lock implements LockInterface
      *
      * @param non-empty-string $resource The name of the resource to be locked.
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
-     * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
-     * @param int|float|DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
+     * @param int|float|\DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
+     * @param int|float|\DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
      *        Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
      *        server caps the acquire window at defaultImmediateTimeout (1ms), so false
      *        is returned almost immediately when the resource is already locked. A
@@ -42,11 +41,12 @@ final class Lock implements LockInterface
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
+    #[\Override]
     public function lock(
         string $resource,
         ?string $id = null,
-        int|float|DateInterval $ttl = 0,
-        int|float|DateInterval $waitTTL = 0,
+        int|float|\DateInterval $ttl = 0,
+        int|float|\DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
@@ -68,8 +68,8 @@ final class Lock implements LockInterface
      *
      * @param non-empty-string $resource The name of the resource to be locked.
      * @param non-empty-string|null $id The lock ID. If not specified, a random UUID will be generated.
-     * @param int|float|DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
-     * @param int|float|DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
+     * @param int|float|\DateInterval $ttl The time-to-live of the lock, in seconds. Defaults to 0 (forever).
+     * @param int|float|\DateInterval $waitTTL How long to wait for the lock to become free before giving up, in seconds.
      *        Defaults to 0. With 0 the call is effectively non-blocking: the RoadRunner
      *        server caps the acquire window at defaultImmediateTimeout (1ms), so false
      *        is returned almost immediately when the resource is already locked. A
@@ -79,11 +79,12 @@ final class Lock implements LockInterface
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
+    #[\Override]
     public function lockRead(
         string $resource,
         ?string $id = null,
-        int|float|DateInterval $ttl = 0,
-        int|float|DateInterval $waitTTL = 0,
+        int|float|\DateInterval $ttl = 0,
+        int|float|\DateInterval $waitTTL = 0,
     ): false|string {
         $request = new Request();
         $request->setResource($resource);
@@ -106,6 +107,7 @@ final class Lock implements LockInterface
      * @param non-empty-string $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the lock was released successfully, false otherwise.
      */
+    #[\Override]
     public function release(string $resource, string $id): bool
     {
         $request = new Request();
@@ -127,6 +129,7 @@ final class Lock implements LockInterface
      * @param non-empty-string $resource The name of the resource to be unlocked
      * @return bool Returns true if all locks were released successfully, false otherwise
      */
+    #[\Override]
     public function forceRelease(string $resource): bool
     {
         $request = new Request();
@@ -146,6 +149,7 @@ final class Lock implements LockInterface
      * @param string|null $id Lock ID from lock or lockRead method.
      * @return bool Returns true if the resource is locked, false otherwise.
      */
+    #[\Override]
     public function exists(string $resource, ?string $id = null): bool
     {
         $request = new Request();
@@ -162,12 +166,13 @@ final class Lock implements LockInterface
      *
      * @param string $resource The name of the resource to update the TTL for.
      * @param string $id Lock ID from lock or lockRead method.
-     * @param int|float|DateInterval $ttl The new TTL in seconds.
+     * @param int|float|\DateInterval $ttl The new TTL in seconds.
      * @return bool Returns true on success and false on failure.
      *
      * @throws \InvalidArgumentException If ttl is negative.
      */
-    public function updateTTL(string $resource, string $id, int|float|DateInterval $ttl): bool
+    #[\Override]
+    public function updateTTL(string $resource, string $id, int|float|\DateInterval $ttl): bool
     {
         $request = new Request();
         $request->setResource($resource);
@@ -179,23 +184,21 @@ final class Lock implements LockInterface
         return $response->getOk();
     }
 
-    private function convertTimeToMicroseconds(int|float|DateInterval $ttl): int
+    private function convertTimeToMicroseconds(int|float|\DateInterval $ttl): int
     {
-        if ($ttl instanceof DateInterval) {
-            return (int) \round((int)$ttl->format('%s') * 1_000_000);
+        if ($ttl instanceof \DateInterval) {
+            return (int) $ttl->format('%s') * 1_000_000;
         }
 
         \assert($ttl >= 0, 'TTL must be positive');
 
-        return (int) \round($ttl * 1_000_000);
+        return (int) \round((float) $ttl * 1_000_000.0);
     }
 
     /**
      * Make an RPC call to the RoadRunner server.
      *
      * @param non-empty-string $method
-     * @param Request $request
-     * @return Response
      */
     private function call(string $method, Request $request): Response
     {
