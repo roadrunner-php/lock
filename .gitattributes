@@ -4,7 +4,7 @@
 /testo.php          export-ignore
 /tests              export-ignore
 /.editorconfig      export-ignore
-/.php_cs.dist.php   export-ignore
+/.php-cs-fixer.dist.php export-ignore
 /psalm.xml          export-ignore
 /psalm.xml.dist     export-ignore
 /UPGRADING.md       export-ignore

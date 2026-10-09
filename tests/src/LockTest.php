@@ -25,18 +25,58 @@ final class LockTest
     private LockIdGeneratorInterface|MockInterface $idGenerator;
     private Lock $lock;
 
-    #[BeforeTest]
-    protected function setUp(): void
+    public static function lockTypeDataProvider(): \Generator
     {
-        $this->rpc = m::mock(RPCInterface::class);
+        foreach (self::lockDataProvider() as $name => $data) {
+            foreach ([true, false] as $result) {
+                foreach (['id1', null] as $id) {
+                    yield 'lock: ' . $name . ' | ' . $id . ' | ' . \var_export($result, true) => [
+                        'lock',
+                        'lock.Lock',
+                        ...$data,
+                        $result,
+                        $id,
+                    ];
 
-        $this->rpc->shouldReceive('withCodec')
-            ->with(m::type(ProtobufCodec::class))
-            ->once()
-            ->andReturnSelf();
+                    yield 'read-lock: ' . $name . ' | ' . $id . ' | ' . \var_export($result, true) => [
+                        'lockRead',
+                        'lock.LockRead',
+                        ...$data,
+                        $result,
+                        $id,
+                    ];
+                }
+            }
+        }
+    }
 
-        $this->idGenerator = m::mock(LockIdGeneratorInterface::class);
-        $this->lock = new Lock($this->rpc, $this->idGenerator);
+    public static function updateTTLDataProvider(): \Traversable
+    {
+        foreach (self::lockDataProvider() as $name => $data) {
+            foreach ([true, false] as $result) {
+                yield $name . ' | ' . \var_export($result, true) => [$data[0], $data[1], $result];
+            }
+        }
+    }
+
+    public static function lockDataProvider(): \Generator
+    {
+        yield 'int' => [10, 10_000_000, 8, 8_000_000,];
+
+        yield 'float' => [0.000_01, 10, 0.000_004, 4,];
+
+        yield 'date-interval' => [
+            new \DateInterval('PT10S'),
+            10_000_000,
+            new \DateInterval('PT9S'),
+            9_000_000,
+        ];
+    }
+
+    public static function resultDataProvider(): \Traversable
+    {
+        yield [true];
+        yield [false];
     }
 
     #[DataProvider('lockTypeDataProvider')]
@@ -159,60 +199,6 @@ final class LockTest
         Assert::same($this->lock->exists('resource', 'some-id'), $result);
     }
 
-    public static function lockTypeDataProvider(): \Generator
-    {
-        foreach (self::lockDataProvider() as $name => $data) {
-            foreach ([true, false] as $result) {
-                foreach (['id1', null] as $id) {
-                    yield 'lock: ' . $name . ' | ' .$id. ' | ' . \var_export($result, true) => [
-                        'lock',
-                        'lock.Lock',
-                        ...$data,
-                        $result,
-                        $id
-                    ];
-
-                    yield 'read-lock: ' . $name . ' | ' .$id. ' | ' . \var_export($result, true) => [
-                        'lockRead',
-                        'lock.LockRead',
-                        ...$data,
-                        $result,
-                        $id
-                    ];
-                }
-            }
-        }
-    }
-
-    public static function updateTTLDataProvider(): \Traversable
-    {
-        foreach (self::lockDataProvider() as $name => $data) {
-            foreach ([true, false] as $result) {
-                yield $name . ' | ' . \var_export($result, true) => [$data[0], $data[1], $result];
-            }
-        }
-    }
-
-    public static function lockDataProvider(): \Generator
-    {
-        yield 'int' => [10, 10_000_000, 8, 8_000_000,];
-
-        yield 'float' => [0.000_01, 10, 0.000_004, 4,];
-
-        yield 'date-interval' => [
-            new \DateInterval('PT10S'),
-            10_000_000,
-            new \DateInterval('PT9S'),
-            9_000_000,
-        ];
-    }
-
-    public static function resultDataProvider(): \Traversable
-    {
-        yield [true];
-        yield [false];
-    }
-
     #[ExpectException(\LogicException::class)]
     public function testLockNegativeTtl(): void
     {
@@ -241,5 +227,19 @@ final class LockTest
     public function testUpdateNegativeWaitTtl(): void
     {
         $this->lock->updateTTL('resource', 'uuid', -300);
+    }
+
+    #[BeforeTest]
+    protected function setUp(): void
+    {
+        $this->rpc = m::mock(RPCInterface::class);
+
+        $this->rpc->shouldReceive('withCodec')
+            ->with(m::type(ProtobufCodec::class))
+            ->once()
+            ->andReturnSelf();
+
+        $this->idGenerator = m::mock(LockIdGeneratorInterface::class);
+        $this->lock = new Lock($this->rpc, $this->idGenerator);
     }
 }
