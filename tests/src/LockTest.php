@@ -12,17 +12,22 @@ use RoadRunner\Lock\Lock;
 use RoadRunner\Lock\LockIdGeneratorInterface;
 use Spiral\Goridge\RPC\Codec\ProtobufCodec;
 use Spiral\Goridge\RPC\RPCInterface;
+use Testo\Assert;
+use Testo\Assert\ExpectException;
+use Testo\Data\DataProvider;
+use Testo\Lifecycle\BeforeTest;
+use Testo\Test;
 
-final class LockTest extends TestCase
+#[Test]
+final class LockTest
 {
     private RPCInterface|MockInterface $rpc;
     private LockIdGeneratorInterface|MockInterface $idGenerator;
     private Lock $lock;
 
+    #[BeforeTest]
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->rpc = m::mock(RPCInterface::class);
 
         $this->rpc->shouldReceive('withCodec')
@@ -34,9 +39,7 @@ final class LockTest extends TestCase
         $this->lock = new Lock($this->rpc, $this->idGenerator);
     }
 
-    /**
-     * @dataProvider lockTypeDataProvider
-     */
+    #[DataProvider('lockTypeDataProvider')]
     public function testLock(
         string $method,
         string $callMethod,
@@ -69,15 +72,13 @@ final class LockTest extends TestCase
 
         $result = $this->lock->$method(resource: 'resource', id: $id, ttl: $ttl, waitTTL: $wait);
         if ($expectedResult) {
-            $this->assertSame(($id === null ? 'some-id' : $id), $result);
+            Assert::same($result, ($id === null ? 'some-id' : $id));
         } else {
-            $this->assertFalse($result);
+            Assert::false($result);
         }
     }
 
-    /**
-     * @dataProvider resultDataProvider
-     */
+    #[DataProvider('resultDataProvider')]
     public function testRelease(bool $result): void
     {
         $this->rpc->shouldReceive('call')
@@ -90,12 +91,10 @@ final class LockTest extends TestCase
             })
             ->andReturn(new Response(['ok' => $result]));
 
-        $this->assertSame($result, $this->lock->release('resource', 'some-id'));
+        Assert::same($this->lock->release('resource', 'some-id'), $result);
     }
 
-    /**
-     * @dataProvider resultDataProvider
-     */
+    #[DataProvider('resultDataProvider')]
     public function testForceRelease(bool $result): void
     {
         $this->rpc->shouldReceive('call')
@@ -108,12 +107,10 @@ final class LockTest extends TestCase
             })
             ->andReturn(new Response(['ok' => $result]));
 
-        $this->assertSame($result, $this->lock->forceRelease('resource'));
+        Assert::same($this->lock->forceRelease('resource'), $result);
     }
 
-    /**
-     * @dataProvider resultDataProvider
-     */
+    #[DataProvider('resultDataProvider')]
     public function testExists(bool $result): void
     {
         $this->rpc->shouldReceive('call')
@@ -126,12 +123,10 @@ final class LockTest extends TestCase
             })
             ->andReturn(new Response(['ok' => $result]));
 
-        $this->assertSame($result, $this->lock->exists('resource'));
+        Assert::same($this->lock->exists('resource'), $result);
     }
 
-    /**
-     * @dataProvider updateTTLDataProvider
-     */
+    #[DataProvider('updateTTLDataProvider')]
     public function testUpdateTTL($ttl, int $expectedTtl, bool $result): void
     {
         $this->rpc->shouldReceive('call')
@@ -145,12 +140,10 @@ final class LockTest extends TestCase
             })
             ->andReturn(new Response(['ok' => $result]));
 
-        $this->assertSame($result, $this->lock->updateTTL('resource', 'some-id', $ttl));
+        Assert::same($this->lock->updateTTL('resource', 'some-id', $ttl), $result);
     }
 
-    /**
-     * @dataProvider resultDataProvider
-     */
+    #[DataProvider('resultDataProvider')]
     public function testExistsWithId(bool $result): void
     {
         $this->rpc->shouldReceive('call')
@@ -163,7 +156,7 @@ final class LockTest extends TestCase
             })
             ->andReturn(new Response(['ok' => $result]));
 
-        $this->assertSame($result, $this->lock->exists('resource', 'some-id'));
+        Assert::same($this->lock->exists('resource', 'some-id'), $result);
     }
 
     public static function lockTypeDataProvider(): \Generator
@@ -220,33 +213,33 @@ final class LockTest extends TestCase
         yield [false];
     }
 
+    #[ExpectException(\LogicException::class)]
     public function testLockNegativeTtl(): void
     {
-        self::expectException(\LogicException::class);
         $this->lock->lock('resource', 'uuid', -300);
     }
 
+    #[ExpectException(\LogicException::class)]
     public function testLockNegativeWaitTtl(): void
     {
-        self::expectException(\LogicException::class);
         $this->lock->lock('resource', 'uuid', 0, -300);
     }
 
+    #[ExpectException(\LogicException::class)]
     public function testLockReadNegativeTtl(): void
     {
-        self::expectException(\LogicException::class);
         $this->lock->lock('resource', 'uuid', -300);
     }
 
+    #[ExpectException(\LogicException::class)]
     public function testLockReadNegativeWaitTtl(): void
     {
-        self::expectException(\LogicException::class);
         $this->lock->lockRead('resource', 'uuid', 0, -300);
     }
 
+    #[ExpectException(\LogicException::class)]
     public function testUpdateNegativeWaitTtl(): void
     {
-        self::expectException(\LogicException::class);
         $this->lock->updateTTL('resource', 'uuid', -300);
     }
 }
