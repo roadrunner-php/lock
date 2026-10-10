@@ -31,17 +31,18 @@ processes connected to the RoadRunner server.
 Make sure that your server is configured with following PHP version and extensions:
 
 - PHP 8.2+
+- RoadRunner 3.0+ with the `lock` plugin enabled
 
 ### Installation
 
 ```bash
-composer require roadrunner-php/lock
+composer require roadrunner/lock
 ```
 
-[![PHP](https://img.shields.io/packagist/php-v/roadrunner-php/lock.svg?style=flat-square&logo=php)](https://packagist.org/packages/roadrunner-php/lock)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/roadrunner-php/lock.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/roadrunner-php/lock)
-[![License](https://img.shields.io/packagist/l/roadrunner-php/lock.svg?style=flat-square)](LICENSE)
-[![Total Downloads](https://img.shields.io/packagist/dt/roadrunner-php/lock.svg?style=flat-square)](https://packagist.org/packages/roadrunner-php/lock/stats)
+[![PHP](https://img.shields.io/packagist/php-v/roadrunner/lock.svg?style=flat-square&logo=php)](https://packagist.org/packages/roadrunner/lock)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/roadrunner/lock.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/roadrunner/lock)
+[![License](https://img.shields.io/packagist/l/roadrunner/lock.svg?style=flat-square)](LICENSE)
+[![Total Downloads](https://img.shields.io/packagist/dt/roadrunner/lock.svg?style=flat-square)](https://packagist.org/packages/roadrunner/lock/stats)
 
 ### Configuration
 

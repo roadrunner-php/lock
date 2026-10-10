@@ -1,16 +1,43 @@
 {
-    "name": "roadrunner-php/lock",
+    "name": "roadrunner/lock",
     "type": "library",
-    "description": "This package provides a PHP integration package for the RoadRunner Lock plugin, which allows for easy management of distributed locks in PHP applications. The plugin provides a fast, lightweight, and reliable way to acquire, release, and manage locks in a distributed environment, making it ideal for use in high-traffic web applications and microservices.",
+    "description": "Distributed locks for PHP applications backed by the RoadRunner lock plugin: acquire, release, extend and inspect read and write locks over RPC",
     "keywords": [
-        "roadrunner-php",
-        "spiral",
-        "lock"
+        "roadrunner",
+        "lock",
+        "mutex",
+        "distributed-lock",
+        "semaphore",
+        "concurrency"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anton Titov",
+            "homepage": "https://github.com/wolfy-j"
+        },
+        {
+            "name": "Pavel Buchnev",
+            "homepage": "https://github.com/butschster"
+        },
+        {
+            "name": "Aleksei Gagarin",
+            "homepage": "https://github.com/roxblnfk"
+        },
+        {
+            "name": "Maksim Smakouz",
+            "homepage": "https://github.com/msmakouz"
+        },
+        {
+            "name": "RoadRunner Community",
+            "homepage": "https://github.com/roadrunner-server/roadrunner/graphs/contributors"
+        }
     ],
     "homepage": "https://roadrunner.dev/",
     "support": {
-        "docs": "https://docs.roadrunner.dev",
+        "docs": "https://docs.roadrunner.dev/docs/plugins/locks",
         "issues": "https://github.com/roadrunner-server/roadrunner/issues",
+        "source": "https://github.com/roadrunner-php/lock",
         "forum": "https://forum.roadrunner.dev/",
         "chat": "https://discord.gg/V6EK4he"
     },
@@ -20,34 +47,12 @@
             "url": "https://github.com/sponsors/roadrunner-server"
         }
     ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Anton Titov (wolfy-j)",
-            "email": "wolfy-j@spiralscout.com"
-        },
-        {
-            "name": "Pavel Buchnev (butschster)",
-            "email": "pavel.buchnev@spiralscout.com"
-        },
-        {
-            "name": "Aleksei Gagarin (roxblnfk)",
-            "email": "alexey.gagarin@spiralscout.com"
-        },
-        {
-            "name": "Maksim Smakouz (msmakouz)",
-            "email": "maksim.smakouz@spiralscout.com"
-        },
-        {
-            "name": "RoadRunner Community",
-            "homepage": "https://github.com/spiral/roadrunner/graphs/contributors"
-        }
-    ],
     "require": {
         "php": "^8.2",
         "ramsey/uuid": "^4.7",
-        "roadrunner-php/roadrunner-api-dto": "^1.0",
-        "spiral/goridge": "^4.0"
+        "roadrunner/api-dto": "^2.1",
+        "roadrunner/goridge": "^4.5",
+        "spiral/roadrunner": "^3.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
@@ -55,6 +60,9 @@
         "testo/bridge-mockery": "^0.1.2",
         "testo/testo": "^0.10.55",
         "vimeo/psalm": "^6 || ^7"
+    },
+    "replace": {
+        "roadrunner-php/lock": "self.version"
     },
     "autoload": {
         "psr-4": {
