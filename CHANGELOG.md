@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/roadrunner-php/lock/compare/1.1.0...1.2.0) (2026-10-10)
+
+
+### Features
+
+* rename the package to roadrunner/lock ([bb7a1ba](https://github.com/roadrunner-php/lock/commit/bb7a1ba391fbdf75720db951b9f86dabc22054de))
+* support RoadRunner v3 ([#10](https://github.com/roadrunner-php/lock/issues/10)) ([bb7a1ba](https://github.com/roadrunner-php/lock/commit/bb7a1ba391fbdf75720db951b9f86dabc22054de))
+
 ## [1.1.0](https://github.com/roadrunner-php/lock/compare/1.0.1...1.1.0) (2026-10-09)
 
 
