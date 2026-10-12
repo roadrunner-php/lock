@@ -55,7 +55,9 @@
         "spiral/roadrunner": "^3.0"
     },
     "require-dev": {
+        "llm/skills": "^1.14",
         "mockery/mockery": "^1.6",
+        "roxblnfk/unpoly": "^1.8",
         "spiral/code-style": "^2.3.1",
         "testo/bridge-mockery": "^0.1.2",
         "testo/testo": "^0.10.55",
@@ -81,6 +83,9 @@
         "psalm": "vendor/bin/psalm --config=psalm.xml ./src --show-info=true"
     },
     "config": {
+        "allow-plugins": {
+            "llm/skills": true
+        },
         "audit": {
             "ignore": {
                 "GHSA-g9pc-8g42-g6vq": "False positive: the range < 2025.1.0 also matches RoadRunner 3.x, which is not affected"
