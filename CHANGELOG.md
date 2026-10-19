@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/roadrunner-php/lock/compare/1.2.0...1.2.1) (2026-10-19)
+
+
+### Bug Fixes
+
+* require roadrunner/roadrunner instead of spiral/roadrunner ([098c721](https://github.com/roadrunner-php/lock/commit/098c7219d67d5b538699c0f79f65b96b99f1f458))
+
 ## [1.2.0](https://github.com/roadrunner-php/lock/compare/1.1.0...1.2.0) (2026-10-10)
 
 
